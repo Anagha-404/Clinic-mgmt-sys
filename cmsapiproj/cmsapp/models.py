@@ -1,6 +1,42 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
 
+
+
+# Create your models here.
+
+class Department(models.Model):
+    DepartmentId=models.AutoField(primary_key=True)
+    DepartmentName=models.CharField(max_length=100)
+    ConsultationFees=models.IntegerField()
+    
+    def __str__(self):
+        return self.DepartmentName
+    
+class Doctor(models.Model):
+    DoctorId=models.AutoField(primary_key=True)
+    DoctorName=models.CharField(max_length=100)
+    Contact=models.CharField(max_length=10)
+    EmailId=models.CharField(max_length=100)
+    DOB=models.DateField()
+    Address=models.CharField(max_length=100)
+    SexChoices=[
+        ('Male','Male'),
+        ('Female','Female'),
+        ('Other','Other')
+    ]
+    Sex=models.CharField(max_length=100)
+    BloodGroup=models.CharField(max_length=5)
+    Salary=models.IntegerField()
+    DateOfJoining=models.DateField(max_length=100)
+    DeptId=models.ForeignKey(Department, on_delete=models.CASCADE)
+    Qualificatons=models.CharField(max_length=100)
+    Availablility=models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.DoctorName
+
+
 # Create your models here.
 class Receptionist(models.Model):
     ReceptionistId = models.AutoField(primary_key=True)
@@ -19,7 +55,7 @@ class UserDetails(models.Model):
     def __str__(self):
         return self.Name
     
-class RoleDetails(models.model):
+class RoleDetails(models.Model):
     RoleId = models.AutoField(primary_key=True)
     RoleName = models.CharField(max_length=50)
 
@@ -37,7 +73,6 @@ class Patient(models.Model):
     Gender = models.CharField(max_length=10)
     BloodGroup = models.CharField(max_length=10)
     Age = models.IntegerField()
-    TokenId = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
     def __str__(self):
@@ -48,17 +83,16 @@ class Appointment(models.Model):
     PatientId = models.ForeignKey(Patient,max_length=100)
     DoctorId = models.ForeignKey(Doctor,max_length=100)
     AppointmentDate = models.DateTimeField()
-    AppointmentTime = models.ForeignKey()
+    AppointmentTime = models.ForeignKey(Time, on_delete=models.CASCADE)
     Status = models.CharField(max_length=20, choices=[('Scheduled', 'Scheduled'), ('Completed', 'Completed'), ('Cancelled', 'Cancelled')])
     ReceptionistId = models.ForeignKey(Receptionist, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.PatientName} - {self.DoctorName} on {self.AppointmentDate}"
+        return self.AppointmentId
     
-    class Time(models.Model):
-        TimeId = models.AutoField(primary_key=True)
-        StartTime = models.TimeField()
-        AppointmentId = models.ForeignKey(Appointment, on_delete=models.CASCADE)
+class Time(models.Model):
+    AppointmentTime = models.TimeField(primary_key=True)
+    AppointmentId = models.ForeignKey(Appointment, on_delete=models.CASCADE)
         
 
-       
+ 

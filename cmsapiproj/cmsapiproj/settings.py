@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'cmsapiproj',  # Your custom app for the CMS API
+    'cmsapiproj',
 ]
 
 MIDDLEWARE = [
