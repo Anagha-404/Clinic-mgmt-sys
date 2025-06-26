@@ -14,6 +14,7 @@ class Department(models.Model):
 class Doctor(models.Model):
     DoctorId=models.AutoField(primary_key=True)
     DoctorName=models.CharField(max_length=100)
+    RoleId=models.ForeignKey(RoleDetails, on_delete=models.CASCADE)
     Contact=models.CharField(max_length=10)
     EmailId=models.CharField(max_length=100)
     DOB=models.DateField()
@@ -59,6 +60,7 @@ class LabTest(models.Model):
 class Receptionist(models.Model):
     ReceptionistId = models.AutoField(primary_key=True)
     Name = models.CharField(max_length=100)
+    RoleId=models.ForeignKey(RoleDetails, on_delete=models.CASCADE)
     Email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=15, unique=True)
     UserId =models.ForeignKey(User, on_delete=models.CASCADE)
