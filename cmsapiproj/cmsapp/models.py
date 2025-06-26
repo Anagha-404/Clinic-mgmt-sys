@@ -1,8 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
 
-
-
 # Create your models here.
 
 class Department(models.Model):
@@ -36,8 +34,28 @@ class Doctor(models.Model):
     def __str__(self):
         return self.DoctorName
 
+class Prescription(models.Model):
+    AppointmentId=models.ForeignKey(Appointment, on_delete=models.CASCADE)
+    DoctorId=models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    MedicineId=models.ForeignKey(Medicine, on_delete=models.CASCADE)
+    DateIssued=models.DateField()
+    LabTestId=models.ForeignKey(LabTest, on_delete=models.CASCADE)
 
-# Create your models here.
+class Medicine(models.Model):
+    MedicineId=models.AutoField(primary_key=True)
+    MedicineName=models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.MedicineName
+    
+class LabTest(models.Model):
+    LabTestId=models.AutoField(primary_key=True)
+    TestName=models.CharField(max_length=200)
+    TestDescription=models.CharField(max_length=300)
+
+    def __str__(self):
+        return self.TestName
+
 class Receptionist(models.Model):
     ReceptionistId = models.AutoField(primary_key=True)
     Name = models.CharField(max_length=100)
@@ -46,7 +64,6 @@ class Receptionist(models.Model):
     UserId =models.ForeignKey(User, on_delete=models.CASCADE)
 
     
-
 class UserDetails(models.Model):
     UserId = models.AutoField(primary_key=True)
     Name = models.CharField(max_length=100)
@@ -63,7 +80,6 @@ class RoleDetails(models.Model):
         return self.RoleName
     
 
-
 class Patient(models.Model):
     PatientId = models.AutoField(primary_key=True)
     Name = models.CharField(max_length=100)
@@ -73,7 +89,6 @@ class Patient(models.Model):
     Gender = models.CharField(max_length=10)
     BloodGroup = models.CharField(max_length=10)
     Age = models.IntegerField()
-
 
     def __str__(self):
         return self.Name
