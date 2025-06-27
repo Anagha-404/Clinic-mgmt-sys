@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'cmsapp',
+    'rest_framework.authtoken',  # For token authentication
+
 ]
 
 MIDDLEWARE = [

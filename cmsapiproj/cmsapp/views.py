@@ -1,8 +1,8 @@
+from django.contrib.auth import authenticate
 from django.shortcuts import render
 from .models import Department,Doctor,Prescription,Medicine,LabTest,Receptionist,UserDetails,Patient,Appointment
 from .serializers import DepartmentSerializer,DoctorSerializer,PrescriptionSerializer,MedicineSerializer, LabTestSerializer,ReceptionistSerializer, UserDetailsSerializer,PatientSerializer,AppointmentSerializer,SignupSerializer,LoginSerializer
 from rest_framework import viewsets, status
-from rest_framework import response
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -54,6 +54,8 @@ class LoginAPIView(APIView):
             else:
                 response={'status':status.HTTP_401_UNAUTHORIZED,
                           'message': 'Login NOT successful'}
+                return Response(response, status=status.HTTP_401_UNAUTHORIZED)  # fixed: return immediately
+
         
 
         #if the serializer is not valid, return the errors
