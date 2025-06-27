@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
+from django.utils import timezone
+import datetime
+
 
 # Create your models here.
 
@@ -8,15 +11,14 @@ class Department(models.Model):
     DepartmentName=models.CharField(max_length=100)
     ConsultationFees=models.IntegerField()
     
-    def __str__(self):
+    def _str_(self):
         return self.DepartmentName
     
 class Doctor(models.Model):
     DoctorId=models.AutoField(primary_key=True)
     DoctorName=models.CharField(max_length=100)
-    RoleId=models.ForeignKey(RoleDetails, on_delete=models.CASCADE)
     Contact=models.CharField(max_length=10)
-    EmailId=models.CharField(max_length=100)
+    Email=models.EmailField(max_length=100)
     DOB=models.DateField()
     Address=models.CharField(max_length=100)
     SexChoices=[
@@ -24,64 +26,17 @@ class Doctor(models.Model):
         ('Female','Female'),
         ('Other','Other')
     ]
-    Sex=models.CharField(max_length=100)
+    Sex=models.CharField(max_length=10, choices=SexChoices)
     BloodGroup=models.CharField(max_length=5)
     Salary=models.IntegerField()
-    DateOfJoining=models.DateField(max_length=100)
+    DateOfJoining=models.DateField()
     DeptId=models.ForeignKey(Department, on_delete=models.CASCADE)
-    Qualificatons=models.CharField(max_length=100)
+    Qualifications =models.CharField(max_length=100)
     Availablility=models.BooleanField(default=True)
 
-    def __str__(self):
+    def _str_(self):
         return self.DoctorName
-
-class Prescription(models.Model):
-    AppointmentId=models.ForeignKey(Appointment, on_delete=models.CASCADE)
-    DoctorId=models.ForeignKey(Doctor, on_delete=models.CASCADE)
-    MedicineId=models.ForeignKey(Medicine, on_delete=models.CASCADE)
-    DateIssued=models.DateField()
-    LabTestId=models.ForeignKey(LabTest, on_delete=models.CASCADE)
-
-class Medicine(models.Model):
-    MedicineId=models.AutoField(primary_key=True)
-    MedicineName=models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.MedicineName
     
-class LabTest(models.Model):
-    LabTestId=models.AutoField(primary_key=True)
-    TestName=models.CharField(max_length=200)
-    TestDescription=models.CharField(max_length=300)
-
-    def __str__(self):
-        return self.TestName
-
-class Receptionist(models.Model):
-    ReceptionistId = models.AutoField(primary_key=True)
-    Name = models.CharField(max_length=100)
-    RoleId=models.ForeignKey(RoleDetails, on_delete=models.CASCADE)
-    Email = models.EmailField(unique=True)
-    phone_number = models.CharField(max_length=15, unique=True)
-    UserId =models.ForeignKey(User, on_delete=models.CASCADE)
-
-    
-class UserDetails(models.Model):
-    UserId = models.AutoField(primary_key=True)
-    Name = models.CharField(max_length=100)
-    RoleId = models.ForeignKey(Group, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.Name
-    
-class RoleDetails(models.Model):
-    RoleId = models.AutoField(primary_key=True)
-    RoleName = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.RoleName
-    
-
 class Patient(models.Model):
     PatientId = models.AutoField(primary_key=True)
     Name = models.CharField(max_length=100)
@@ -92,24 +47,82 @@ class Patient(models.Model):
     BloodGroup = models.CharField(max_length=10)
     Age = models.IntegerField()
 
-    def __str__(self):
+    def _str_(self):
         return self.Name
-    
+
 class Appointment(models.Model):
     AppointmentId = models.AutoField(primary_key=True)
-    PatientId = models.ForeignKey(Patient,max_length=100)
-    DoctorId = models.ForeignKey(Doctor,max_length=100)
-    AppointmentDate = models.DateTimeField()
-    AppointmentTime = models.ForeignKey(Time, on_delete=models.CASCADE)
+    PatientId = models.ForeignKey(Patient,on_delete=models.CASCADE)
+    DoctorId = models.ForeignKey(Doctor,on_delete=models.CASCADE)
+    AppointmentDate = models.DateField()
+    AppointmentTime = models.TimeField( choices=[(datetime.time(10, 0), '10:00 AM'),
+                                                             (datetime.time(10, 30), '10:30 AM'),
+                                                             (datetime.time(11, 0), '11:00 AM'),
+                                                             (datetime.time(11, 30), '11:30 AM'),
+                                                             (datetime.time(12, 0), '12:00 PM'),
+                                                             (datetime.time(12, 30), '12:30 PM'),
+                                                             (datetime.time(13, 30), '01:30 PM'),
+                                                             (datetime.time(14, 0), '02:00 PM'),
+                                                             (datetime.time(14, 30), '02:30 PM'),
+                                                             (datetime.time(15, 0), '03:00 PM'),
+                                                             (datetime.time(15, 30), '03:30 PM'),
+                                                             (datetime.time(16, 0), '04:00 PM'),
+                                                             (datetime.time(16, 30), '04:30 PM'),
+                                                             (datetime.time(17, 0), '05:00 PM'),])
     Status = models.CharField(max_length=20, choices=[('Scheduled', 'Scheduled'), ('Completed', 'Completed'), ('Cancelled', 'Cancelled')])
-    ReceptionistId = models.ForeignKey(Receptionist, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return self.AppointmentId
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['DoctorId', 'AppointmentDate', 'AppointmentTime'],
+                name='unique_doctor_date_time'
+            ),
+
+            models.UniqueConstraint(
+                fields=['PatientId', 'AppointmentDate', 'AppointmentTime'],
+                name='unique_patient_date_time'
+            )]
+    def _str_(self):
+        return self.Status
+
+class Medicine(models.Model):
+    MedicineId=models.AutoField(primary_key=True)
+    MedicineName=models.CharField(max_length=100)
+
+    def _str_(self):
+        return self.MedicineName
     
-class Time(models.Model):
-    AppointmentTime = models.TimeField(primary_key=True)
-    AppointmentId = models.ForeignKey(Appointment, on_delete=models.CASCADE)
-        
+class LabTest(models.Model):
+    LabTestId=models.AutoField(primary_key=True)
+    TestName=models.CharField(max_length=200)
+    TestDescription=models.CharField(max_length=300)
 
- 
+    def _str_(self):
+        return self.TestName
+
+class Prescription(models.Model):
+    AppointmentId=models.ForeignKey(Appointment, on_delete=models.CASCADE)
+    DoctorId=models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    MedicineId=models.ForeignKey(Medicine, on_delete=models.CASCADE)
+    DateIssued=models.DateField()
+    LabTestId=models.ForeignKey(LabTest, on_delete=models.CASCADE)
+    Description=models.CharField(max_length=200)
+
+    def _str_(self):
+        return self.Description
+    
+class UserDetails(models.Model):
+    User = models.OneToOneField(User, on_delete=models.CASCADE,related_name='user_details')
+    Name = models.CharField(max_length=100)
+
+    def _str_(self):
+        return self.Name
+
+class Receptionist(models.Model):
+    ReceptionistId = models.AutoField(primary_key=True)
+    Name = models.CharField(max_length=100)
+    Email = models.EmailField(unique=True)
+    phone_number = models.CharField(max_length=15, unique=True)
+
+    def _str_(self):
+        return self.Name
