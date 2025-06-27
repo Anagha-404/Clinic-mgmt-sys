@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from .models import Department,Doctor,Prescription,Medicine,LabTest,Receptionist,UserDetails,RoleDetails,Patient,Appointment,Time
-from .serializers import DepartmentSerializer,DoctorSerializer,PrescriptionSerializer,MedicineSerializer, LabTestSerializer,ReceptionistSerializer, UserDetailsSerializer, RoleDetailsSerializer,PatientSerializer,AppointmentSerializer,TimeSerializer
+from .models import Department,Doctor,Prescription,Medicine,LabTest,Receptionist,UserDetails,Patient,Appointment
+from .serializers import DepartmentSerializer,DoctorSerializer,PrescriptionSerializer,MedicineSerializer, LabTestSerializer,ReceptionistSerializer, UserDetailsSerializer,PatientSerializer,AppointmentSerializer
 from rest_framework import viewsets
 
 # Create your views here.
@@ -33,10 +33,6 @@ class UserDetailsViewSet(viewsets.ModelViewSet):
     queryset=UserDetails.objects.all()
     serializer_class=UserDetailsSerializer
 
-class RoleDetailsViewSet(viewsets.ModelViewSet):
-    queryset=RoleDetails.objects.all()
-    serializer_class=RoleDetailsSerializer
-
 class PatientViewSet(viewsets.ModelViewSet):
     queryset=Patient.objects.all()
     serializer_class=PatientSerializer
@@ -44,7 +40,3 @@ class PatientViewSet(viewsets.ModelViewSet):
 class AppointmentViewSet(viewsets.ModelViewSet):
     queryset=Appointment.objects.all()
     serializer_class=AppointmentSerializer
-
-class TimeViewSet(viewsets.ModelViewSet):
-    queryset=Time.objects.all()
-    serializer_class=TimeSerializer

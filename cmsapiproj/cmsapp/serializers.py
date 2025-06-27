@@ -1,4 +1,4 @@
-from rest_framework import serializers,Doctor,Prescription,Medicine,LabTest,Receptionist,UserDetails,RoleDetails,Patient,Appointment,Time
+from rest_framework import serializers,Doctor,Prescription,Medicine,LabTest,Receptionist,UserDetails,Patient,Appointment
 from .models import Department
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
@@ -38,11 +38,6 @@ class UserDetailsSerializer(serializers.ModelSerializer):
         model=UserDetails
         fields='__all__'
 
-class RoleDetailsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=RoleDetails
-        fields='__all__'
-
 class PatientSerializer(serializers.ModelSerializer):
     class Meta:
         model=Patient
@@ -51,9 +46,4 @@ class PatientSerializer(serializers.ModelSerializer):
 class AppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model=Appointment
-        fields='__all__'
-
-class TimeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=Time
         fields='__all__'

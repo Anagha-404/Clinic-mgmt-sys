@@ -11,7 +11,7 @@ class Department(models.Model):
     DepartmentName=models.CharField(max_length=100)
     ConsultationFees=models.IntegerField()
     
-    def _str_(self):
+    def __str__(self):
         return self.DepartmentName
     
 class Doctor(models.Model):
@@ -34,7 +34,7 @@ class Doctor(models.Model):
     Qualifications =models.CharField(max_length=100)
     Availablility=models.BooleanField(default=True)
 
-    def _str_(self):
+    def __str__(self):
         return self.DoctorName
     
 class Patient(models.Model):
@@ -47,7 +47,7 @@ class Patient(models.Model):
     BloodGroup = models.CharField(max_length=10)
     Age = models.IntegerField()
 
-    def _str_(self):
+    def __str__(self):
         return self.Name
 
 class Appointment(models.Model):
@@ -82,14 +82,14 @@ class Appointment(models.Model):
                 fields=['PatientId', 'AppointmentDate', 'AppointmentTime'],
                 name='unique_patient_date_time'
             )]
-    def _str_(self):
+    def __str__(self):
         return self.Status
 
 class Medicine(models.Model):
     MedicineId=models.AutoField(primary_key=True)
     MedicineName=models.CharField(max_length=100)
 
-    def _str_(self):
+    def __str__(self):
         return self.MedicineName
     
 class LabTest(models.Model):
@@ -97,7 +97,7 @@ class LabTest(models.Model):
     TestName=models.CharField(max_length=200)
     TestDescription=models.CharField(max_length=300)
 
-    def _str_(self):
+    def __str__(self):
         return self.TestName
 
 class Prescription(models.Model):
@@ -108,14 +108,14 @@ class Prescription(models.Model):
     LabTestId=models.ForeignKey(LabTest, on_delete=models.CASCADE)
     Description=models.CharField(max_length=200)
 
-    def _str_(self):
+    def __str__(self):
         return self.Description
     
 class UserDetails(models.Model):
     User = models.OneToOneField(User, on_delete=models.CASCADE,related_name='user_details')
     Name = models.CharField(max_length=100)
 
-    def _str_(self):
+    def __str__(self):
         return self.Name
 
 class Receptionist(models.Model):
@@ -124,5 +124,5 @@ class Receptionist(models.Model):
     Email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=15, unique=True)
 
-    def _str_(self):
+    def __str__(self):
         return self.Name
